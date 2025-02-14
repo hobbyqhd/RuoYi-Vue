@@ -1,0 +1,36 @@
+/**
+* Element UI theme customization with Material Design style
+**/
+
+/* theme color */
+$--color-primary: #1976D2;
+$--color-success: #4CAF50;
+$--color-warning: #FFC107;
+$--color-danger: #F44336;
+
+$--button-font-weight: 500;
+
+$--color-text-regular: #212121;
+$--color-text-placeholder: #757575;
+
+$--border-color-base: #E0E0E0;
+$--border-color-light: #EEEEEE;
+$--border-color-lighter: #F5F5F5;
+
+$--box-shadow-base: 0 2px 4px rgba(0, 0, 0, 0.14), 0 3px 4px rgba(0, 0, 0, 0.12), 0 1px 5px rgba(0, 0, 0, 0.20);
+$--box-shadow-light: 0 2px 2px rgba(0, 0, 0, 0.14), 0 1px 5px rgba(0, 0, 0, 0.12);
+
+$--background-color-base: #FFFFFF;
+
+/* 圆角 */
+$--border-radius-base: 4px;
+$--border-radius-small: 2px;
+
+/* icon font path, required */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+
+@import "~element-ui/packages/theme-chalk/src/index";
+
+:export {
+  theme: $--color-primary;
+}
