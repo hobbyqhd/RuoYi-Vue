@@ -38,6 +38,9 @@ public class SysDevice extends BaseEntity {
     /** 制造商 */
     private String manufacturer;
 
+    /** 保管人 */
+    private String custodian;
+
     /** 型号 */
     private String modelNumber;
 
@@ -124,6 +127,13 @@ public class SysDevice extends BaseEntity {
         return location;
     }
 
+    public String getCustodian() {
+        return custodian;
+    }
+
+    public void setCustodian(String custodian) {
+        this.custodian = custodian;
+    }
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
@@ -136,6 +146,7 @@ public class SysDevice extends BaseEntity {
                 .append("purchasePrice", getPurchasePrice())
                 .append("manufacturer", getManufacturer())
                 .append("modelNumber", getModelNumber())
+                .append("custodian", getCustodian())
                 .append("location", getLocation())
                 .append("createBy", getCreateBy())
                 .append("createTime", getCreateTime())

@@ -17,16 +17,16 @@ import com.ruoyi.device.service.ISysDeviceService;
 public class SysDeviceServiceImpl implements ISysDeviceService
 {
     /** 设备状态：正常 */
-    private static final String DEVICE_STATUS_NORMAL = "0";
+    private static final String DEVICE_STATUS_NORMAL = "1";
 
     /** 设备状态：借出 */
-    private static final String DEVICE_STATUS_LOANED = "1";
+    private static final String DEVICE_STATUS_LOANED = "2";
 
     /** 设备状态：维修中 */
-    private static final String DEVICE_STATUS_MAINTAINING = "2";
+    private static final String DEVICE_STATUS_MAINTAINING = "3";
 
     /** 设备状态：报废 */
-    private static final String DEVICE_STATUS_DISCARDED = "3";
+    private static final String DEVICE_STATUS_DISCARDED = "4";
     @Autowired
     private SysDeviceMapper sysDeviceMapper;
 

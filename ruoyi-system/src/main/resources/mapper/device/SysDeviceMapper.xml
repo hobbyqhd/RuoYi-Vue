@@ -14,6 +14,7 @@
         <result property="purchasePrice" column="purchase_price"       />
         <result property="manufacturer"  column="manufacturer"      />
         <result property="modelNumber"   column="model_number"          />
+        <result property="custodian"     column="custodian"         />
         <result property="location"  column="location"         />
         <result property="createBy"      column="create_by"      />
         <result property="createTime"    column="create_time"    />
@@ -23,7 +24,7 @@
     </resultMap>
 
     <sql id="selectSysDeviceVo">
-        select device_id, device_name, device_code, device_type, device_status, purchase_date, purchase_price, manufacturer, model_number, location, create_by, create_time, update_by, update_time, remark
+        select device_id, device_name, device_code, device_type, device_status, purchase_date, purchase_price, manufacturer, model_number, location, create_by, create_time, update_by, update_time, remark, custodian
         from sys_device
     </sql>
 
@@ -62,6 +63,7 @@
             <if test="manufacturer != null">manufacturer,</if>
             <if test="modelNumber != null">model_number,</if>
             <if test="location != null">location,</if>
+            <if test="custodian != null">custodian,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
@@ -78,6 +80,7 @@
             <if test="manufacturer != null">#{manufacturer},</if>
             <if test="modelNumber != null">#{modelNumber},</if>
             <if test="location != null">#{location},</if>
+            <if test="custodian != null">#{custodian},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
@@ -98,6 +101,7 @@
             <if test="manufacturer != null">manufacturer = #{manufacturer},</if>
             <if test="modelNumber != null">model_number = #{modelNumber},</if>
             <if test="location != null">location = #{location},</if>
+            <if test="custodian != null">custodian = #{custodian},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>

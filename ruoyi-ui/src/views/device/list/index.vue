@@ -48,18 +48,15 @@
     </el-row>
 
     <el-table v-loading="loading" :data="deviceList">
-      <el-table-column label="设备ID" align="center" prop="deviceId" />
+    
       <el-table-column label="设备编号" align="center" prop="deviceCode" />
       <el-table-column label="设备名称" align="center" prop="deviceName" />
       <el-table-column label="设备类型" align="center" prop="deviceType" />
       <el-table-column label="设备状态" align="center" prop="deviceStatus">
         <template slot-scope="scope">
-          <el-tag :type="getStatusType(scope.row.deviceStatus)">
-            {{ dict.type.sys_device_status[scope.row.deviceStatus] }}
-          </el-tag>
+          <dict-tag :options="dict.type.sys_device_status" :value="scope.row.deviceStatus" :type="sucess"/>
         </template>
       </el-table-column>
-      <el-table-column label="规格型号" align="center" prop="specification" />
       <el-table-column label="购入日期" align="center" prop="purchaseDate" width="180">
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.purchaseDate, '{y}-{m}-{d}') }}</span>
@@ -117,8 +114,8 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="规格型号" prop="specification">
-          <el-input v-model="form.specification" placeholder="请输入规格型号" />
+        <el-form-item label="型号" prop="modelNumber">
+          <el-input v-model="form.modelNumber" placeholder="请输入型号" />
         </el-form-item>
         <el-form-item label="购入日期" prop="purchaseDate">
           <el-date-picker
@@ -166,8 +163,8 @@ export default {
         deviceName: undefined,
         deviceType: undefined,
         deviceStatus: undefined,
-        specification: undefined,
         purchaseDate: undefined,
+        modelNumber: undefined,
         custodian: undefined,
         location: undefined
       },
@@ -192,10 +189,10 @@ export default {
   methods: {
     getStatusType(status) {
       const statusMap = {
-        '0': 'success',  // 正常
-        '1': 'warning',  // 借出
-        '2': 'info',     // 维修中
-        '3': 'danger'    // 报废
+        '1': 'success',  // 正常
+        '2': 'warning',  // 借出
+        '3': 'info',     // 维修中
+        '4': 'danger'    // 报废
       };
       return statusMap[status] || '';
     },
@@ -237,7 +234,7 @@ export default {
         deviceName: undefined,
         deviceType: undefined,
         deviceStatus: undefined,
-        specification: undefined,
+        modelNumber: undefined,
         purchaseDate: undefined,
         custodian: undefined,
         location: undefined
