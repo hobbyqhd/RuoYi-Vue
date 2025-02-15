@@ -1,10 +1,9 @@
-package com.ruoyi.web.controller.system;
+package com.ruoyi.web.controller.project;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,6 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.domain.SysProject;
 import com.ruoyi.system.service.ISysProjectService;
 
@@ -29,25 +27,21 @@ import com.ruoyi.system.service.ISysProjectService;
  * @author ruoyi
  */
 @RestController
-@RequestMapping("/system/project")
+@RequestMapping("/project")
 public class SysProjectController extends BaseController
 {
     @Autowired
     private ISysProjectService projectService;
 
     /**
-     * 获取项目列表
+     * 查询项目列表
      */
     @PreAuthorize("@ss.hasPermi('system:project:list')")
     @GetMapping("/list")
-    @Log(title = "项目管理", businessType = BusinessType.OTHER)
     public TableDataInfo list(SysProject project)
     {
-        logger.debug("开始查询项目列表，查询参数：{}", project);
-
         startPage();
         List<SysProject> list = projectService.selectProjectList(project);
-        logger.debug("查询到{}条项目记录，返回数据：{}", list.size(), list);
         return getDataTable(list);
     }
 
@@ -67,9 +61,8 @@ public class SysProjectController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:project:add')")
     @Log(title = "项目管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@Validated @RequestBody SysProject project)
+    public AjaxResult add(@RequestBody SysProject project)
     {
-        project.setCreateBy(SecurityUtils.getUsername());
         return toAjax(projectService.insertProject(project));
     }
 
@@ -79,9 +72,8 @@ public class SysProjectController extends BaseController
     @PreAuthorize("@ss.hasPermi('system:project:edit')")
     @Log(title = "项目管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@Validated @RequestBody SysProject project)
+    public AjaxResult edit(@RequestBody SysProject project)
     {
-        project.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(projectService.updateProject(project));
     }
 

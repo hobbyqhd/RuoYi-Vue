@@ -9,10 +9,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item label="项目状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="项目状态" clearable>
           <el-option
-            v-for="dict in dict.type.sys_normal_disable"
+            v-for="dict in dict.type.sys_project_status"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -36,45 +36,26 @@
           v-hasPermi="['system:project:add']"
         >新增</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="success"
-          plain
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate"
-          v-hasPermi="['system:project:edit']"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="danger"
-          plain
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['system:project:remove']"
-        >删除</el-button>
-      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="projectList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
+    <el-table v-loading="loading" :data="projectList">
       <el-table-column label="项目编号" align="center" prop="projectId" />
-      <el-table-column label="项目编码" align="center" prop="projectCode" />
       <el-table-column label="项目名称" align="center" prop="projectName" />
-      <el-table-column label="项目描述" align="center" prop="description" :show-overflow-tooltip="true" />
-      <el-table-column label="状态" align="center" prop="status">
+      <el-table-column label="项目描述" align="center" prop="description" />
+      <el-table-column label="开始日期" align="center" prop="startDate" width="180">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_normal_disable" :value="scope.row.status"/>
+          <span>{{ parseTime(scope.row.startDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+      <el-table-column label="结束日期" align="center" prop="endDate" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ parseTime(scope.row.endDate, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="项目状态" align="center" prop="status">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_project_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -108,23 +89,37 @@
     <!-- 添加或修改项目对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="项目编码" prop="projectCode">
-          <el-input v-model="form.projectCode" placeholder="请输入项目编码" />
-        </el-form-item>
         <el-form-item label="项目名称" prop="projectName">
           <el-input v-model="form.projectName" placeholder="请输入项目名称" />
         </el-form-item>
         <el-form-item label="项目描述" prop="description">
           <el-input v-model="form.description" type="textarea" placeholder="请输入项目描述" />
         </el-form-item>
-        <el-form-item label="状态">
-          <el-radio-group v-model="form.status">
-            <el-radio
-              v-for="dict in dict.type.sys_normal_disable"
+        <el-form-item label="开始日期" prop="startDate">
+          <el-date-picker clearable
+            v-model="form.startDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择开始日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="结束日期" prop="endDate">
+          <el-date-picker clearable
+            v-model="form.endDate"
+            type="date"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择结束日期">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="项目状态" prop="status">
+          <el-select v-model="form.status" placeholder="请选择项目状态">
+            <el-option
+              v-for="dict in dict.type.sys_project_status"
               :key="dict.value"
-              :label="dict.value"
-            >{{dict.label}}</el-radio>
-          </el-radio-group>
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -136,21 +131,15 @@
 </template>
 
 <script>
-import { listProject, getProject, delProject, addProject, updateProject } from "@/api/system/project";
+import { listProject, getProject, delProject, addProject, updateProject } from "@/api/project/project";
 
 export default {
   name: "Project",
-  dicts: ['sys_normal_disable'],
+  dicts: ['sys_project_status'],
   data() {
     return {
       // 遮罩层
       loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
       // 显示搜索条件
       showSearch: true,
       // 总条数
@@ -165,18 +154,18 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        projectName: undefined,
-        status: undefined
+        projectName: null,
+        status: null
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        projectCode: [
-          { required: true, message: "项目编码不能为空", trigger: "blur" }
-        ],
         projectName: [
           { required: true, message: "项目名称不能为空", trigger: "blur" }
+        ],
+        status: [
+          { required: true, message: "项目状态不能为空", trigger: "change" }
         ]
       }
     };
@@ -202,13 +191,14 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        projectId: undefined,
-        projectCode: undefined,
-        projectName: undefined,
-        description: undefined,
-        status: "0"
+        projectId: null,
+        projectName: null,
+        description: null,
+        startDate: null,
+        endDate: null,
+        status: null
       };
-      this.resetForm("form");
+      this.$refs["form"] && this.$refs["form"].resetFields();
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -220,12 +210,6 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.projectId)
-      this.single = selection.length!==1
-      this.multiple = !selection.length
-    },
     /** 新增按钮操作 */
     handleAdd() {
       this.reset();
@@ -235,7 +219,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const projectId = row.projectId || this.ids
+      const projectId = row.projectId;
       getProject(projectId).then(response => {
         this.form = response.data;
         this.open = true;
@@ -246,7 +230,7 @@ export default {
     submitForm() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.projectId != undefined) {
+          if (this.form.projectId != null) {
             updateProject(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
@@ -264,9 +248,8 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const projectIds = row.projectId || this.ids;
-      this.$modal.confirm('是否确认删除项目编号为"' + projectIds + '"的数据项？').then(function() {
-        return delProject(projectIds);
+      this.$modal.confirm('是否确认删除项目名称为"' + row.projectName + '"的数据项？').then(function() {
+        return delProject(row.projectId);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");

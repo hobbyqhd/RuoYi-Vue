@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.device.mapper.SysDeviceMaintenanceMapper">
+    
+    <resultMap type="SysDeviceMaintenance" id="SysDeviceMaintenanceResult">
+        <id     property="maintenanceId"     column="maintenance_id"     />
+        <result property="deviceId"          column="device_id"          />
+        <result property="deviceName"        column="device_name"        />
+        <result property="maintenanceType"    column="maintenance_type"    />
+        <result property="faultDescription"   column="fault_description"   />
+        <result property="startTime"          column="start_time"          />
+        <result property="endTime"            column="end_time"            />
+        <result property="maintenanceStatus"  column="maintenance_status"   />
+        <result property="maintenanceResult"  column="maintenance_result"   />
+        <result property="maintenanceCost"    column="maintenance_cost"     />
+        <result property="maintainer"         column="maintainer"          />
+        <result property="createBy"          column="create_by"          />
+        <result property="createTime"        column="create_time"        />
+        <result property="updateBy"          column="update_by"          />
+        <result property="updateTime"        column="update_time"        />
+        <result property="remark"           column="remark"             />
+    </resultMap>
+
+    <sql id="selectSysDeviceMaintenanceVo">
+        select maintenance_id, sys_device_maintenance.device_id, device_name, maintenance_type, fault_description, start_time, end_time, maintenance_status, maintenance_result, maintenance_cost, maintainer, sys_device_maintenance.create_by, sys_device_maintenance.create_time, sys_device_maintenance.update_by, sys_device_maintenance.update_time
+        from sys_device_maintenance left join sys_device on sys_device.device_id = sys_device_maintenance.device_id
+    </sql>
+
+    <select id="selectSysDeviceMaintenanceList" parameterType="SysDeviceMaintenance" resultMap="SysDeviceMaintenanceResult">
+        <include refid="selectSysDeviceMaintenanceVo"/>
+        <where>  
+            <if test="deviceId != null "> and device_id = #{deviceId}</if>
+            <if test="maintenanceType != null  and maintenanceType != ''"> and maintenance_type = #{maintenanceType}</if>
+            <if test="maintenanceStatus != null  and maintenanceStatus != ''"> and maintenance_status = #{maintenanceStatus}</if>
+            <if test="planTime != null "> and plan_time = #{planTime}</if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectSysDeviceMaintenanceByMaintenanceId" parameterType="Long" resultMap="SysDeviceMaintenanceResult">
+        <include refid="selectSysDeviceMaintenanceVo"/>
+        where maintenance_id = #{maintenanceId}
+    </select>
+
+    <select id="selectMaintenancesByDeviceId" parameterType="Long" resultMap="SysDeviceMaintenanceResult">
+        <include refid="selectSysDeviceMaintenanceVo"/>
+        where device_id = #{deviceId}
+        order by create_time desc
+    </select>
+        
+    <insert id="insertSysDeviceMaintenance" parameterType="SysDeviceMaintenance" useGeneratedKeys="true" keyProperty="maintenanceId">
+        insert into sys_device_maintenance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">device_id,</if>
+            <if test="maintenanceType != null">maintenance_type,</if>
+            <if test="maintenanceContent != null">maintenance_content,</if>
+            <if test="planTime != null">plan_time,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="maintenanceStatus != null">maintenance_status,</if>
+            <if test="result != null">result,</if>
+            <if test="cost != null">cost,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="maintainer != null">maintainer,</if>
+            <if test="faultDescription != null">fault_description,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="maintenanceType != null">#{maintenanceType},</if>
+            <if test="maintenanceContent != null">#{maintenanceContent},</if>
+            <if test="planTime != null">#{planTime},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="maintenanceStatus != null">#{maintenanceStatus},</if>
+            <if test="result != null">#{result},</if>
+            <if test="cost != null">#{cost},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="maintainer != null">maintainer,</if>
+            <if test="faultDescription != null">fault_description,</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysDeviceMaintenance" parameterType="SysDeviceMaintenance">
+        update sys_device_maintenance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="maintenanceType != null">maintenance_type = #{maintenanceType},</if>
+            <if test="maintenanceContent != null">maintenance_content = #{maintenanceContent},</if>
+            <if test="planTime != null">plan_time = #{planTime},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="maintenanceStatus != null">maintenance_status = #{maintenanceStatus},</if>
+            <if test="result != null">result = #{result},</if>
+            <if test="cost != null">cost = #{cost},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="maintainer != null">maintainer = #{maintainer}, </if>
+            <if test="faultDescription != null">fault_description = #{faultDescription},</if>
+        </trim>
+        where maintenance_id = #{maintenanceId}
+    </update>
+
+    <delete id="deleteSysDeviceMaintenanceByMaintenanceId" parameterType="Long">
+        delete from sys_device_maintenance where maintenance_id = #{maintenanceId}
+    </delete>
+
+    <delete id="deleteSysDeviceMaintenanceByMaintenanceIds" parameterType="String">
+        delete from sys_device_maintenance where maintenance_id in 
+        <foreach item="maintenanceId" collection="array" open="(" separator="," close=")">
+            #{maintenanceId}
+        </foreach>
+    </delete>
+
+</mapper>

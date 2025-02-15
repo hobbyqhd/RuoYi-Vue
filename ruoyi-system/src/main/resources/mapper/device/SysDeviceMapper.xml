@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.device.SysDeviceMapper">
+    
+    <resultMap type="com.ruoyi.system.domain.device.SysDevice" id="SysDeviceResult">
+        <id     property="deviceId"      column="device_id"      />
+        <result property="deviceName"    column="device_name"    />
+        <result property="deviceCode"    column="device_code"    />
+        <result property="deviceType"    column="device_type"    />
+        <result property="deviceStatus"  column="device_status"  />
+        <result property="purchaseDate"  column="purchase_date"  />
+        <result property="purchasePrice" column="purchase_price"       />
+        <result property="manufacturer"  column="manufacturer"      />
+        <result property="modelNumber"   column="model_number"          />
+        <result property="location"  column="location"         />
+        <result property="createBy"      column="create_by"      />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"      column="update_by"      />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"       column="remark"         />
+    </resultMap>
+
+    <sql id="selectSysDeviceVo">
+        select device_id, device_name, device_code, device_type, device_status, purchase_date, purchase_price, manufacturer, model_number, location, create_by, create_time, update_by, update_time, remark
+        from sys_device
+    </sql>
+
+    <select id="selectSysDeviceList" parameterType="com.ruoyi.system.domain.device.SysDevice" resultMap="SysDeviceResult">
+        <include refid="selectSysDeviceVo"/>
+        <where>
+            <if test="deviceName != null and deviceName != ''">
+                AND device_name like concat('%', #{deviceName}, '%')
+            </if>
+            <if test="deviceCode != null and deviceCode != ''">
+                AND device_code = #{deviceCode}
+            </if>
+            <if test="deviceType != null and deviceType != ''">
+                AND device_type = #{deviceType}
+            </if>
+            <if test="deviceStatus != null and deviceStatus != ''">
+                AND device_status = #{deviceStatus}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSysDeviceByDeviceId" parameterType="Long" resultMap="SysDeviceResult">
+        <include refid="selectSysDeviceVo"/>
+        where device_id = #{deviceId}
+    </select>
+
+    <insert id="insertSysDevice" parameterType="com.ruoyi.system.domain.device.SysDevice" useGeneratedKeys="true" keyProperty="deviceId">
+        insert into sys_device
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceName != null">device_name,</if>
+            <if test="deviceCode != null">device_code,</if>
+            <if test="deviceType != null">device_type,</if>
+            <if test="deviceStatus != null">device_status,</if>
+            <if test="purchaseDate != null">purchase_date,</if>
+            <if test="purchasePrice != null">purchase_price,</if>
+            <if test="manufacturer != null">manufacturer,</if>
+            <if test="modelNumber != null">model_number,</if>
+            <if test="location != null">location,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceName != null">#{deviceName},</if>
+            <if test="deviceCode != null">#{deviceCode},</if>
+            <if test="deviceType != null">#{deviceType},</if>
+            <if test="deviceStatus != null">#{deviceStatus},</if>
+            <if test="purchaseDate != null">#{purchaseDate},</if>
+            <if test="purchasePrice != null">#{purchasePrice},</if>
+            <if test="manufacturer != null">#{manufacturer},</if>
+            <if test="modelNumber != null">#{modelNumber},</if>
+            <if test="location != null">#{location},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysDevice" parameterType="com.ruoyi.system.domain.device.SysDevice">
+        update sys_device
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceName != null">device_name = #{deviceName},</if>
+            <if test="deviceCode != null">device_code = #{deviceCode},</if>
+            <if test="deviceType != null">device_type = #{deviceType},</if>
+            <if test="deviceStatus != null">device_status = #{deviceStatus},</if>
+            <if test="purchaseDate != null">purchase_date = #{purchaseDate},</if>
+            <if test="purchasePrice != null">purchase_price = #{purchasePrice},</if>
+            <if test="manufacturer != null">manufacturer = #{manufacturer},</if>
+            <if test="modelNumber != null">model_number = #{modelNumber},</if>
+            <if test="location != null">location = #{location},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where device_id = #{deviceId}
+    </update>
+
+    <delete id="deleteSysDeviceByDeviceId" parameterType="Long">
+        delete from sys_device where device_id = #{deviceId}
+    </delete>
+
+    <delete id="deleteSysDeviceByDeviceIds" parameterType="String">
+        delete from sys_device where device_id in 
+        <foreach item="deviceId" collection="array" open="(" separator="," close=")">
+            #{deviceId}
+        </foreach>
+    </delete>
+</mapper>
