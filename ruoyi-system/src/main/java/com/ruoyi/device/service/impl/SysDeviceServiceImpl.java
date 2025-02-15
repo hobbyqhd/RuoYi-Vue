@@ -1,13 +1,13 @@
-package com.ruoyi.system.service.impl;
+package com.ruoyi.device.service.impl;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ruoyi.system.domain.SysDevice;
-import com.ruoyi.system.mapper.SysDeviceMapper;
-import com.ruoyi.system.service.ISysDeviceService;
+import com.ruoyi.device.domain.SysDevice;
+import com.ruoyi.device.mapper.SysDeviceMapper;
+import com.ruoyi.device.service.ISysDeviceService;
 
 /**
  * 设备管理Service业务层处理

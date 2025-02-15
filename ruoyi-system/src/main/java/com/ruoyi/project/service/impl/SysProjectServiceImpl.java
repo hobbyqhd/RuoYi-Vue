@@ -1,13 +1,13 @@
-package com.ruoyi.system.service.impl;
+package com.ruoyi.project.service.impl;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ruoyi.system.domain.SysProject;
-import com.ruoyi.system.mapper.SysProjectMapper;
-import com.ruoyi.system.service.ISysProjectService;
+import com.ruoyi.device.mapper.SysProjectMapper;
+import com.ruoyi.project.SysProject;
+import com.ruoyi.project.service.ISysProjectService;
 
 /**
  * 项目管理Service业务层处理

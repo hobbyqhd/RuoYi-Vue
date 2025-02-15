@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.SysProjectMapper">
+<mapper namespace="com.ruoyi.project.mapper.SysProjectMapper">
     
-    <resultMap type="SysProject" id="SysProjectResult">
+    <resultMap type="com.ruoyi.project.SysProject" id="SysProjectResult">
         <id     property="projectId"      column="project_id"      />
         <result property="projectName"    column="project_name"    />
         <result property="projectCode"    column="project_code"    />
@@ -22,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from sys_project p
     </sql>
 
-    <select id="selectProjectList" parameterType="SysProject" resultMap="SysProjectResult">
+    <select id="selectProjectList" parameterType="com.ruoyi.project.SysProject" resultMap="SysProjectResult">
         <include refid="selectProjectVo"/>
         <where>
             <if test="projectName != null and projectName != ''">
@@ -42,34 +42,68 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where p.project_id = #{projectId}
     </select>
         
-    <insert id="insertProject" parameterType="SysProject" useGeneratedKeys="true" keyProperty="projectId">
+    <insert id="insertProject" parameterType="com.ruoyi.project.SysProject" useGeneratedKeys="true" keyProperty="projectId">
         insert into sys_project(
-            <if test="projectName != null and projectName != ''">project_name,</if>
-            <if test="projectCode != null and projectCode != ''">project_code,</if>
-            <if test="description != null and description != ''">description,</if>
-            <if test="status != null and status != ''">status,</if>
-            <if test="remark != null and remark != ''">remark,</if>
-            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="projectName != null and projectName != ''">
+                project_name,
+            </if>
+            <if test="projectCode != null and projectCode != ''">
+                project_code,
+            </if>
+            <if test="description != null and description != ''">
+                description,
+            </if>
+            <if test="status != null and status != ''">
+                status,
+            </if>
+            <if test="remark != null and remark != ''">
+                remark,
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by,
+            </if>
             create_time
         )values(
-            <if test="projectName != null and projectName != ''">#{projectName},</if>
-            <if test="projectCode != null and projectCode != ''">#{projectCode},</if>
-            <if test="description != null and description != ''">#{description},</if>
-            <if test="status != null and status != ''">#{status},</if>
-            <if test="remark != null and remark != ''">#{remark},</if>
-            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="projectName != null and projectName != ''">
+                #{projectName},
+            </if>
+            <if test="projectCode != null and projectCode != ''">
+                #{projectCode},
+            </if>
+            <if test="description != null and description != ''">
+                #{description},
+            </if>
+            <if test="status != null and status != ''">
+                #{status},
+            </if>
+            <if test="remark != null and remark != ''">
+                #{remark},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                #{createBy},
+            </if>
             sysdate()
         )
     </insert>
 
-    <update id="updateProject" parameterType="SysProject">
+    <update id="updateProject" parameterType="com.ruoyi.project.SysProject">
         update sys_project
         <set>
-            <if test="projectName != null and projectName != ''">project_name = #{projectName},</if>
-            <if test="description != null and description != ''">description = #{description},</if>
-            <if test="status != null and status != ''">status = #{status},</if>
-            <if test="remark != null">remark = #{remark},</if>
-            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="projectName != null and projectName != ''">
+                project_name = #{projectName},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
             update_time = sysdate()
         </set>
         where project_id = #{projectId}

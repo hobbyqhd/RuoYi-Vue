@@ -1,4 +1,4 @@
-package com.ruoyi.system.domain;
+package com.ruoyi.device.domain;
 
 import java.util.Date;
 

@@ -1,8 +1,8 @@
-package com.ruoyi.system.mapper;
+package com.ruoyi.device.mapper;
 
 import java.util.List;
 
-import com.ruoyi.system.domain.SysDeviceLoan;
+import com.ruoyi.device.domain.SysDeviceLoan;
 
 /**
  * 设备借用记录Mapper接口

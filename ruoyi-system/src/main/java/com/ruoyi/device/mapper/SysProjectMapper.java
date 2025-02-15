@@ -1,8 +1,8 @@
-package com.ruoyi.system.mapper;
+package com.ruoyi.device.mapper;
 
 import java.util.List;
 
-import com.ruoyi.system.domain.SysProject;
+import com.ruoyi.project.SysProject;
 
 /**
  * 项目管理Mapper接口

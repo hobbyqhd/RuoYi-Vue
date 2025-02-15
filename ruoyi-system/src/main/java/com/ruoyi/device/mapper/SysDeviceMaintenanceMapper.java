@@ -1,15 +1,15 @@
-package com.ruoyi.system.service;
+package com.ruoyi.device.mapper;
 
 import java.util.List;
 
-import com.ruoyi.system.domain.SysDeviceMaintenance;
+import com.ruoyi.device.domain.SysDeviceMaintenance;
 
 /**
- * 设备维护记录Service接口
+ * 设备维护记录Mapper接口
  * 
  * @author ruoyi
  */
-public interface ISysDeviceMaintenanceService 
+public interface SysDeviceMaintenanceMapper 
 {
     /**
      * 查询设备维护记录列表
@@ -44,20 +44,20 @@ public interface ISysDeviceMaintenanceService
     public int updateSysDeviceMaintenance(SysDeviceMaintenance sysDeviceMaintenance);
 
     /**
-     * 批量删除设备维护记录
-     * 
-     * @param maintenanceIds 需要删除的设备维护记录主键集合
-     * @return 结果
-     */
-    public int deleteSysDeviceMaintenanceByMaintenanceIds(Long[] maintenanceIds);
-
-    /**
-     * 删除设备维护记录信息
+     * 删除设备维护记录
      * 
      * @param maintenanceId 设备维护记录主键
      * @return 结果
      */
     public int deleteSysDeviceMaintenanceByMaintenanceId(Long maintenanceId);
+
+    /**
+     * 批量删除设备维护记录
+     * 
+     * @param maintenanceIds 需要删除的数据主键集合
+     * @return 结果
+     */
+    public int deleteSysDeviceMaintenanceByMaintenanceIds(Long[] maintenanceIds);
 
     /**
      * 查询设备的维护记录
@@ -66,20 +66,4 @@ public interface ISysDeviceMaintenanceService
      * @return 设备维护记录集合
      */
     public List<SysDeviceMaintenance> selectMaintenancesByDeviceId(Long deviceId);
-
-    /**
-     * 开始设备维护
-     * 
-     * @param maintenanceId 维护记录ID
-     * @return 结果
-     */
-    public int startMaintenance(Long maintenanceId);
-
-    /**
-     * 完成设备维护
-     * 
-     * @param maintenance 维护记录信息
-     * @return 结果
-     */
-    public int completeMaintenance(SysDeviceMaintenance maintenance);
 }

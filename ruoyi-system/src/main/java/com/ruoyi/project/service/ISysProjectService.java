@@ -1,8 +1,8 @@
-package com.ruoyi.system.service;
+package com.ruoyi.project.service;
 
 import java.util.List;
 
-import com.ruoyi.system.domain.SysProject;
+import com.ruoyi.project.SysProject;
 
 /**
  * 项目管理Service接口

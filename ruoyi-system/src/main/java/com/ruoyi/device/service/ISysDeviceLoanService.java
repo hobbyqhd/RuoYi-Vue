@@ -1,8 +1,8 @@
-package com.ruoyi.system.service;
+package com.ruoyi.device.service;
 
 import java.util.List;
 
-import com.ruoyi.system.domain.SysDeviceLoan;
+import com.ruoyi.device.domain.SysDeviceLoan;
 
 /**
  * 设备借用记录Service接口

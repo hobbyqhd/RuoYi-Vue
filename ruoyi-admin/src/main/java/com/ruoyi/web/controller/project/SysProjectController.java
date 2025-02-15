@@ -18,8 +18,8 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.domain.SysProject;
-import com.ruoyi.system.service.ISysProjectService;
+import com.ruoyi.project.SysProject;
+import com.ruoyi.project.service.ISysProjectService;
 
 /**
  * 项目管理Controller

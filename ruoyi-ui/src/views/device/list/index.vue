@@ -41,7 +41,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['system:device:add']"
+          v-hasPermi="['device:add']"
         >新增</el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
@@ -144,7 +144,7 @@
 </template>
 
 <script>
-import { listDevice, getDevice, delDevice, addDevice, updateDevice } from "@/api/device/device";
+import { listDevice, getDevice, delDevice, addDevice, updateDevice } from "@/api/device/list";
 
 export default {
   name: "Device",

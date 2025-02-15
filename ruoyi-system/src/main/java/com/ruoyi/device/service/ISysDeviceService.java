@@ -1,8 +1,8 @@
-package com.ruoyi.system.service;
+package com.ruoyi.device.service;
 
 import java.util.List;
 
-import com.ruoyi.system.domain.SysDevice;
+import com.ruoyi.device.domain.SysDevice;
 
 /**
  * 设备管理Service接口

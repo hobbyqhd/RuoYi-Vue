@@ -196,7 +196,7 @@
 </template>
 
 <script>
-import { listMaintenance, getMaintenance, delMaintenance, addMaintenance, updateMaintenance } from "@/api/system/maintenance";
+import { listMaintenance, getMaintenance, delMaintenance, addMaintenance, updateMaintenance } from "@/api/device/maintenance";
 
 export default {
   name: "Maintenance",

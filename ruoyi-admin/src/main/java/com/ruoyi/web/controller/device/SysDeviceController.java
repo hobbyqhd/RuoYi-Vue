@@ -19,15 +19,15 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
-import com.ruoyi.system.domain.SysDevice;
-import com.ruoyi.system.service.ISysDeviceService;
+import com.ruoyi.device.domain.SysDevice;
+import com.ruoyi.device.service.ISysDeviceService;
 
 /**
  * 设备管理Controller
  * 
  */
 @RestController
-@RequestMapping("/system/device")
+@RequestMapping("/device")
 public class SysDeviceController extends BaseController
 {
     @Autowired
@@ -36,7 +36,7 @@ public class SysDeviceController extends BaseController
     /**
      * 查询设备管理列表
      */
-    @PreAuthorize("@ss.hasPermi('system:device:list')")
+    @PreAuthorize("@ss.hasPermi('device:list')")
     @GetMapping("/list")
     public TableDataInfo list(SysDevice sysDevice)
     {
@@ -48,7 +48,7 @@ public class SysDeviceController extends BaseController
     /**
      * 获取设备管理详细信息
      */
-    @PreAuthorize("@ss.hasPermi('system:device:query')")
+    @PreAuthorize("@ss.hasPermi('device:query')")
     @GetMapping(value = "/{deviceId}")
     public AjaxResult getInfo(@PathVariable("deviceId") Long deviceId)
     {
@@ -58,7 +58,7 @@ public class SysDeviceController extends BaseController
     /**
      * 新增设备管理
      */
-    @PreAuthorize("@ss.hasPermi('system:device:add')")
+    @PreAuthorize("@ss.hasPermi('device:add')")
     @Log(title = "设备管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody SysDevice sysDevice)
@@ -69,7 +69,7 @@ public class SysDeviceController extends BaseController
     /**
      * 修改设备管理
      */
-    @PreAuthorize("@ss.hasPermi('system:device:edit')")
+    @PreAuthorize("@ss.hasPermi('device:edit')")
     @Log(title = "设备管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody SysDevice sysDevice)
@@ -80,7 +80,7 @@ public class SysDeviceController extends BaseController
     /**
      * 删除设备管理
      */
-    @PreAuthorize("@ss.hasPermi('system:device:remove')")
+    @PreAuthorize("@ss.hasPermi('device:remove')")
     @Log(title = "设备管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{deviceIds}")
     public AjaxResult remove(@PathVariable Long[] deviceIds)
@@ -91,7 +91,7 @@ public class SysDeviceController extends BaseController
     /**
      * 检查设备是否可借用
      */
-    @PreAuthorize("@ss.hasPermi('system:device:query')")
+    @PreAuthorize("@ss.hasPermi('device:query')")
     @GetMapping("/checkCanBeLoan/{deviceId}")
     public AjaxResult checkCanBeLoan(@PathVariable("deviceId") Long deviceId)
     {
@@ -101,7 +101,7 @@ public class SysDeviceController extends BaseController
     /**
      * 更新设备状态
      */
-    @PreAuthorize("@ss.hasPermi('system:device:edit')")
+    @PreAuthorize("@ss.hasPermi('device:edit')")
     @Log(title = "设备管理", businessType = BusinessType.UPDATE)
     @PutMapping("/updateStatus")
     public AjaxResult updateStatus(@RequestParam Long deviceId, @RequestParam String status)
