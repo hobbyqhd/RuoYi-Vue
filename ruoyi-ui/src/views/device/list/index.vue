@@ -54,7 +54,7 @@
       <el-table-column label="设备类型" align="center" prop="deviceType" />
       <el-table-column label="设备状态" align="center" prop="deviceStatus">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_device_status" :value="scope.row.deviceStatus" :type="sucess"/>
+          <dict-tag :options="dict.type.sys_device_status" :value="scope.row.deviceStatus" :type="getStatusType(scope.row.deviceStatus)"/>
         </template>
       </el-table-column>
       <el-table-column label="购入日期" align="center" prop="purchaseDate" width="180">
