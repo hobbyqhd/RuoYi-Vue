@@ -25,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysDeviceBorrowVo">
-        select borrow_id, sys_device_borrow.device_id, device_code, borrower, borrow_time, expected_return_time, actual_return_time, borrow_status, borrow_purpose, approver, approve_time, approve_remark, sys_device.create_by, sys_device.create_time, sys_device.update_by, sys_device.update_time, sys_device.remark from sys_device_borrow 
+        select borrow_id, sys_device_borrow.device_id, device_code, borrower, borrow_time, expected_return_time, actual_return_time, sys_device_borrow.borrow_status, borrow_purpose, approver, approve_time, approve_remark, sys_device.create_by, sys_device.create_time, sys_device.update_by, sys_device.update_time, sys_device.remark from sys_device_borrow 
         left join sys_device on sys_device.device_id = sys_device_borrow.device_id
     </sql>
 
