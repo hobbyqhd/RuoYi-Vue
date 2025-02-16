@@ -24,6 +24,19 @@ public class SysDeviceMaintenance extends BaseEntity
     @Excel(name = "设备ID")
     private Long deviceId;
 
+    /** 设备编号  */
+    @Excel(name = "设备编号")
+    private String deviceCode;
+
+    public void setDeviceCode(String deviceCode) 
+    {
+        this.deviceCode = deviceCode;
+    }
+
+    public String getDeviceCode() 
+    {
+        return deviceCode;
+    }
     /** 设备名称 */
     @Excel(name = "设备名称")
     private String deviceName;

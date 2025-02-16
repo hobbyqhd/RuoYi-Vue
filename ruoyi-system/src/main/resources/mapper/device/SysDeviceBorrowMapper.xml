@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.device.mapper.SysDeviceBorrowMapper">
+    
+    <resultMap type="SysDeviceBorrow" id="SysDeviceBorrowResult">
+        <result property="borrowId"    column="borrow_id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="deviceCode"    column="device_code"    />
+        <result property="borrower"    column="borrower"    />
+        <result property="borrowTime"    column="borrow_time"    />
+        <result property="expectedReturnTime"    column="expected_return_time"    />
+        <result property="actualReturnTime"    column="actual_return_time"    />
+        <result property="borrowStatus"    column="borrow_status"    />
+        <result property="borrowPurpose"    column="borrow_purpose"    />
+        <result property="approver"    column="approver"    />
+        <result property="approveTime"    column="approve_time"    />
+        <result property="approveRemark"    column="approve_remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSysDeviceBorrowVo">
+        select borrow_id, sys_device_borrow.device_id, device_code, borrower, borrow_time, expected_return_time, actual_return_time, borrow_status, borrow_purpose, approver, approve_time, approve_remark, sys_device.create_by, sys_device.create_time, sys_device.update_by, sys_device.update_time, sys_device.remark from sys_device_borrow 
+        left join sys_device on sys_device.device_id = sys_device_borrow.device_id
+    </sql>
+
+    <select id="selectSysDeviceBorrowList" parameterType="SysDeviceBorrow" resultMap="SysDeviceBorrowResult">
+        <include refid="selectSysDeviceBorrowVo"/>
+        <where>  
+            <if test="deviceId != null "> and device_id = #{deviceId}</if>
+            <if test="deviceCode != null "> and device_code = #{deviceCode}</if>
+            <if test="borrower != null  and borrower != ''"> and borrower = #{borrower}</if>
+            <if test="borrowTime != null "> and borrow_time = #{borrowTime}</if>
+            <if test="expectedReturnTime != null "> and expected_return_time = #{expectedReturnTime}</if>
+            <if test="actualReturnTime != null "> and actual_return_time = #{actualReturnTime}</if>
+            <if test="borrowStatus != null  and borrowStatus != ''"> and borrow_status = #{borrowStatus}</if>
+            <if test="borrowPurpose != null  and borrowPurpose != ''"> and borrow_purpose = #{borrowPurpose}</if>
+            <if test="approver != null  and approver != ''"> and approver = #{approver}</if>
+            <if test="approveTime != null "> and approve_time = #{approveTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysDeviceBorrowById" parameterType="Long" resultMap="SysDeviceBorrowResult">
+        <include refid="selectSysDeviceBorrowVo"/>
+        where borrow_id = #{borrowId}
+    </select>
+
+    <select id="selectCurrentBorrowByDeviceId" parameterType="Long" resultMap="SysDeviceBorrowResult">
+        <include refid="selectSysDeviceBorrowVo"/>
+        where sys_device_borrow.device_id = #{deviceId} and borrow_status in ('0','1','4','5')
+        limit 1
+    </select>
+
+    <update id="updateBorrowStatusToOverdue" parameterType="Long">
+        update sys_device_borrow
+        set borrow_status = '5',
+            update_time = sysdate(),
+            update_by = 'system'
+        where borrow_id = #{borrowId}
+        and actual_return_time > expected_return_time
+        and borrow_status in ('0', '1', '4')
+    </update>
+        
+    <insert id="insertSysDeviceBorrow" parameterType="SysDeviceBorrow" useGeneratedKeys="true" keyProperty="borrowId">
+        insert into sys_device_borrow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">device_id,</if>
+            <if test="borrower != null">borrower,</if>
+            <if test="borrowTime != null">borrow_time,</if>
+            <if test="expectedReturnTime != null">expected_return_time,</if>
+            <if test="actualReturnTime != null">actual_return_time,</if>
+            <if test="borrowStatus != null">borrow_status,</if>
+            <if test="borrowPurpose != null">borrow_purpose,</if>
+            <if test="approver != null">approver,</if>
+            <if test="approveTime != null">approve_time,</if>
+            <if test="approveRemark != null">approve_remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="borrower != null">#{borrower},</if>
+            <if test="borrowTime != null">#{borrowTime},</if>
+            <if test="expectedReturnTime != null">#{expectedReturnTime},</if>
+            <if test="actualReturnTime != null">#{actualReturnTime},</if>
+            <if test="borrowStatus != null">#{borrowStatus},</if>
+            <if test="borrowPurpose != null">#{borrowPurpose},</if>
+            <if test="approver != null">#{approver},</if>
+            <if test="approveTime != null">#{approveTime},</if>
+            <if test="approveRemark != null">#{approveRemark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysDeviceBorrow" parameterType="SysDeviceBorrow">
+        update sys_device_borrow
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="borrower != null">borrower = #{borrower},</if>
+            <if test="borrowTime != null">borrow_time = #{borrowTime},</if>
+            <if test="expectedReturnTime != null">expected_return_time = #{expectedReturnTime},</if>
+            <if test="actualReturnTime != null">actual_return_time = #{actualReturnTime},</if>
+            <if test="borrowStatus != null">borrow_status = #{borrowStatus},</if>
+            <if test="borrowPurpose != null">borrow_purpose = #{borrowPurpose},</if>
+            <if test="approver != null">approver = #{approver},</if>
+            <if test="approveTime != null">approve_time = #{approveTime},</if>
+            <if test="approveRemark != null">approve_remark = #{approveRemark},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where borrow_id = #{borrowId}
+    </update>
+
+    <delete id="deleteSysDeviceBorrowById" parameterType="Long">
+        delete from sys_device_borrow where borrow_id = #{borrowId}
+    </delete>
+
+    <delete id="deleteSysDeviceBorrowByIds" parameterType="String">
+        delete from sys_device_borrow where borrow_id in 
+        <foreach item="borrowId" collection="array" open="(" separator="," close=")">
+            #{borrowId}
+        </foreach>
+    </delete>
+</mapper>

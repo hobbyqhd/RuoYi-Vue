@@ -44,10 +44,9 @@ export function delBorrow(borrowId) {
 }
 
 // 归还设备
-export function returnDevice(data) {
+export function returnDevice(borrowId) {
   return request({
-    url: '/device/borrow/return',
-    method: 'post',
-    data: data
+    url: '/device/borrow/return/' + borrowId,
+    method: 'put'
   })
 }

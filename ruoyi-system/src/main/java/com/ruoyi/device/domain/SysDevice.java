@@ -47,6 +47,17 @@ public class SysDevice extends BaseEntity {
     /** 位置 */
     private String location;
 
+    /** 借出状态 */
+    private String borrowStatus;
+
+    public String getBorrowStatus() {
+        return borrowStatus;
+    }
+
+    public void setBorrowStatus(String borrowStatus) {
+        this.borrowStatus = borrowStatus;
+    }
+
     public void setDeviceId(Long deviceId) {
         this.deviceId = deviceId;
     }

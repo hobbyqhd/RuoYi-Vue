@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="SysDeviceMaintenance" id="SysDeviceMaintenanceResult">
         <id     property="maintenanceId"     column="maintenance_id"     />
         <result property="deviceId"          column="device_id"          />
+        <result property="deviceCode"          column="device_code"          />
         <result property="deviceName"        column="device_name"        />
         <result property="maintenanceType"    column="maintenance_type"    />
         <result property="faultDescription"   column="fault_description"   />
@@ -24,14 +25,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysDeviceMaintenanceVo">
-        select maintenance_id, sys_device_maintenance.device_id, device_name, maintenance_type, fault_description, start_time, end_time, maintenance_status, maintenance_result, maintenance_cost, maintainer, sys_device_maintenance.create_by, sys_device_maintenance.create_time, sys_device_maintenance.update_by, sys_device_maintenance.update_time, sys_device_maintenance.remark
+        select maintenance_id, sys_device_maintenance.device_id, device_code, device_name, maintenance_type, fault_description, start_time, end_time, maintenance_status, maintenance_result, maintenance_cost, maintainer, sys_device_maintenance.create_by, sys_device_maintenance.create_time, sys_device_maintenance.update_by, sys_device_maintenance.update_time, sys_device_maintenance.remark
         from sys_device_maintenance left join sys_device on sys_device.device_id = sys_device_maintenance.device_id
     </sql>
 
     <select id="selectSysDeviceMaintenanceList" parameterType="SysDeviceMaintenance" resultMap="SysDeviceMaintenanceResult">
         <include refid="selectSysDeviceMaintenanceVo"/>
         <where>  
-            <if test="deviceId != null "> and device_id = #{deviceId}</if>
+            <if test="deviceCode != null and deviceCode != ''"> and device_code like concat('%', #{deviceCode}, '%')</if>
             <if test="maintenanceType != null  and maintenanceType != ''"> and maintenance_type = #{maintenanceType}</if>
             <if test="maintenanceStatus != null  and maintenanceStatus != ''"> and maintenance_status = #{maintenanceStatus}</if>
             <if test="planTime != null "> and plan_time = #{planTime}</if>

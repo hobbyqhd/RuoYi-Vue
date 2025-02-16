@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="设备ID" prop="deviceId">
+      <el-form-item label="设备编号" prop="deviceCode">
         <el-input
-          v-model="queryParams.deviceId"
-          placeholder="请输入设备ID"
+          v-model="queryParams.deviceCode"
+          placeholder="请输入设备编号"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -19,8 +19,8 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable>
+      <el-form-item label="状态" prop="maintenanceStatus">
+        <el-select v-model="queryParams.maintenanceStatus" placeholder="请选择状态" clearable>
           <el-option
             v-for="dict in dict.type.sys_device_maintenance_status"
             :key="dict.value"
@@ -83,8 +83,8 @@
 
     <el-table v-loading="loading" :data="maintenanceList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="设备ID" align="center
-      " prop="deviceId" />
+      <el-table-column label="设备编号" align="center
+      " prop="deviceCode" />
       <el-table-column label="维护类型" align="center" prop="maintenanceType">
         <template slot-scope="scope">
           <dict-tag :options="dict.type.sys_device_maintenance_type" :value="scope.row.maintenanceType"/>
@@ -243,16 +243,16 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        deviceId: null,
+        deviceCode: null,
         maintenanceType: null,
-        status: null,
+        maintenanceStatus: null,
         planTime: null
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        deviceId: [
+        deviceCode: [
           { required: true, message: "设备不能为空", trigger: "change" }
         ],
         maintenanceType: [
@@ -366,7 +366,7 @@ export default {
     reset() {
       this.form = {
         maintenanceId: null,
-        deviceId: null,
+        deviceCode: null,
         maintenanceType: null,
         faultDescription: null,
         startTime: null,
