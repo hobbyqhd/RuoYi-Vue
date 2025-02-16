@@ -24,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysDeviceMaintenanceVo">
-        select maintenance_id, sys_device_maintenance.device_id, device_name, maintenance_type, fault_description, start_time, end_time, maintenance_status, maintenance_result, maintenance_cost, maintainer, sys_device_maintenance.create_by, sys_device_maintenance.create_time, sys_device_maintenance.update_by, sys_device_maintenance.update_time
+        select maintenance_id, sys_device_maintenance.device_id, device_name, maintenance_type, fault_description, start_time, end_time, maintenance_status, maintenance_result, maintenance_cost, maintainer, sys_device_maintenance.create_by, sys_device_maintenance.create_time, sys_device_maintenance.update_by, sys_device_maintenance.update_time, sys_device_maintenance.remark
         from sys_device_maintenance left join sys_device on sys_device.device_id = sys_device_maintenance.device_id
     </sql>
 
@@ -60,8 +60,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="startTime != null">start_time,</if>
             <if test="endTime != null">end_time,</if>
             <if test="maintenanceStatus != null">maintenance_status,</if>
-            <if test="result != null">result,</if>
-            <if test="cost != null">cost,</if>
+            <if test="maintenanceResult != null">maintenance_result,</if>
+            <if test="maintenanceCost != null">maintenance_cost,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
@@ -78,15 +78,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="startTime != null">#{startTime},</if>
             <if test="endTime != null">#{endTime},</if>
             <if test="maintenanceStatus != null">#{maintenanceStatus},</if>
-            <if test="result != null">#{result},</if>
-            <if test="cost != null">#{cost},</if>
+            <if test="maintenanceResult != null">#{maintenanceResult},</if>
+            <if test="maintenanceCost != null">#{maintenanceCost},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
             <if test="remark != null">#{remark},</if>
-            <if test="maintainer != null">maintainer,</if>
-            <if test="faultDescription != null">fault_description,</if>
+            <if test="maintainer != null">#{maintainer},</if>
+            <if test="faultDescription != null">#{faultDescription},</if>
          </trim>
     </insert>
 
@@ -100,8 +100,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="startTime != null">start_time = #{startTime},</if>
             <if test="endTime != null">end_time = #{endTime},</if>
             <if test="maintenanceStatus != null">maintenance_status = #{maintenanceStatus},</if>
-            <if test="result != null">result = #{result},</if>
-            <if test="cost != null">cost = #{cost},</if>
+            <if test="maintenanceResult != null">maintenance_result = #{maintenanceResult},</if>
+            <if test="maintenanceCost != null">maintenance_cost = #{maintenanceCost},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>

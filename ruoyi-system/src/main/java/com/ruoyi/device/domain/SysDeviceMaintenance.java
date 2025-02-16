@@ -64,16 +64,30 @@ public class SysDeviceMaintenance extends BaseEntity
 
     /** 维护结果 */
     @Excel(name = "维护结果")
-    private String result;
+    private String maintenanceResult;
 
     /** 维护费用 */
     @Excel(name = "维护费用")
-    private Double cost;
+    private Double maintenanceCost;
 
     /** 故障描述 */
     @Excel(name = "故障描述")
     private String faultDescription;
+
+    /** 备考 */
+    @Excel(name = "备考")
+    private String remark;
     
+    @Override
+    public String getRemark() {
+        return remark;
+    }
+
+    @Override
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     public void setFaultDescription(String faultDescription) 
     {
         this.faultDescription = faultDescription;
@@ -177,24 +191,24 @@ public class SysDeviceMaintenance extends BaseEntity
         return maintenanceContent;
     }
 
-    public void setResult(String result) 
+    public void setMaintenanceResult(String maintenanceResult) 
     {
-        this.result = result;
+        this.maintenanceResult = maintenanceResult;
     }
 
-    public String getResult() 
+    public String getMaintenanceResult() 
     {
-        return result;
+        return maintenanceResult;
     }
 
-    public void setCost(Double cost) 
+    public void setMaintenanceCost(Double cost) 
     {
-        this.cost = cost;
+        this.maintenanceCost = cost;
     }
 
-    public Double getCost() 
+    public Double getMaintenanceCost() 
     {
-        return cost;
+        return maintenanceCost;
     }
 
     @Override
@@ -208,13 +222,15 @@ public class SysDeviceMaintenance extends BaseEntity
             .append("endTime", getEndTime())
             .append("maintainer", getMaintainer())
             .append("maintenanceContent", getMaintenanceContent())
-            .append("result", getResult())
-            .append("cost", getCost())
+            .append("maintenanceResult", getMaintenanceResult())
+            .append("cost", getMaintenanceCost())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
+            .append("faultDescription", getFaultDescription())
+            .append("maintenanceCost", getMaintenanceCost())
             .toString();
     }
 }

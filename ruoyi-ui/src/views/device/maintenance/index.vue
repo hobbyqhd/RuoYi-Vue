@@ -10,17 +10,19 @@
         />
       </el-form-item>
       <el-form-item label="维护类型" prop="maintenanceType">
-        <el-input
-          v-model="queryParams.maintenanceType"
-          placeholder="请输入维护类型"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
+        <el-select v-model="queryParams.maintenanceType" placeholder="请选择维护类型" clearable>
+          <el-option
+            v-for="dict in dict.type.sys_device_maintenance_type"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="queryParams.status" placeholder="请选择状态" clearable>
           <el-option
-            v-for="dict in dict.type.sys_maintenance_status"
+            v-for="dict in dict.type.sys_device_maintenance_status"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -81,27 +83,31 @@
 
     <el-table v-loading="loading" :data="maintenanceList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="维护ID" align="center" prop="maintenanceId" />
-      <el-table-column label="设备ID" align="center" prop="deviceId" />
-      <el-table-column label="维护类型" align="center" prop="maintenance_type" />
-      <el-table-column label="故障描述" align="center" prop="fault_description" :show-overflow-tooltip="true" />
-      <el-table-column label="开始时间" align="center" prop="start_time" width="180">
+      <el-table-column label="设备ID" align="center
+      " prop="deviceId" />
+      <el-table-column label="维护类型" align="center" prop="maintenanceType">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.start_time, '{y}-{m}-{d}') }}</span>
+          <dict-tag :options="dict.type.sys_device_maintenance_type" :value="scope.row.maintenanceType"/>
         </template>
       </el-table-column>
-      <el-table-column label="结束时间" align="center" prop="end_time" width="180">
+      <el-table-column label="故障描述" align="center" prop="faultDescription" :show-overflow-tooltip="true" />
+      <el-table-column label="开始时间" align="center" prop="startTime" width="180">
         <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.end_time, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.startTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" align="center" prop="maintenance_status">
+      <el-table-column label="结束时间" align="center" prop="endTime" width="180">
         <template slot-scope="scope">
-          <dict-tag :options="dict.type.sys_maintenance_status" :value="scope.row.maintenance_status"/>
+          <span>{{ parseTime(scope.row.endTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="维护结果" align="center" prop="maintenance_result" :show-overflow-tooltip="true" />
-      <el-table-column label="维护费用" align="center" prop="maintenance_cost" />
+      <el-table-column label="状态" align="center" prop="maintenanceStatus">
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_device_maintenance_status" :value="scope.row.maintenanceStatus"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="维护结果" align="center" prop="maintenanceResult" :show-overflow-tooltip="true" />
+      <el-table-column label="维护费用" align="center" prop="maintenanceCost" />
       <el-table-column label="维护人员" align="center" prop="maintainer" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -134,22 +140,28 @@
     <!-- 添加或修改设备维护记录对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="设备ID" prop="deviceId">
-          <el-input v-model="form.deviceId" placeholder="请输入设备ID" />
+        <el-form-item label="设备" prop="deviceId">
+          <el-select v-model="form.deviceId" placeholder="请选择设备" @change="handleDeviceChange">
+            <el-option
+              v-for="device in deviceOptions"
+              :key="device.deviceId"
+              :label="device.deviceName"
+              :value="device.deviceId"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="维护类型" prop="maintenanceType">
-          <el-input v-model="form.maintenanceType" placeholder="请输入维护类型" />
+          <el-select v-model="form.maintenanceType" placeholder="请选择维护类型">
+            <el-option
+              v-for="dict in dict.type.sys_device_maintenance_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="维护内容" prop="maintenanceContent">
-          <el-input v-model="form.maintenanceContent" type="textarea" placeholder="请输入维护内容" />
-        </el-form-item>
-        <el-form-item label="计划时间" prop="planTime">
-          <el-date-picker clearable
-            v-model="form.planTime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择计划时间">
-          </el-date-picker>
+        <el-form-item label="故障描述" prop="faultDescription">
+          <el-input v-model="form.faultDescription" type="textarea" placeholder="请输入故障描述" />
         </el-form-item>
         <el-form-item label="开始时间" prop="startTime">
           <el-date-picker clearable
@@ -167,21 +179,24 @@
             placeholder="请选择结束时间">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="状态" prop="status">
-          <el-select v-model="form.status" placeholder="请选择状态">
+        <el-form-item label="状态" prop="maintenanceStatus">
+          <el-select v-model="form.maintenanceStatus" placeholder="请选择状态">
             <el-option
-              v-for="dict in dict.type.sys_maintenance_status"
+              v-for="dict in dict.type.sys_device_maintenance_status"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="维护结果" prop="result">
-          <el-input v-model="form.result" type="textarea" placeholder="请输入维护结果" />
+        <el-form-item label="维护结果" prop="maintenanceResult">
+          <el-input v-model="form.maintenanceResult" type="textarea" placeholder="请输入维护结果" />
         </el-form-item>
-        <el-form-item label="维护费用" prop="cost">
-          <el-input v-model="form.cost" placeholder="请输入维护费用" />
+        <el-form-item label="维护费用" prop="maintenanceCost">
+          <el-input v-model="form.maintenanceCost" placeholder="请输入维护费用" />
+        </el-form-item>
+        <el-form-item label="维护人员" prop="maintainer">
+          <el-input v-model="form.maintainer" placeholder="请输入维护人员" />
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入备注" />
@@ -197,12 +212,15 @@
 
 <script>
 import { listMaintenance, getMaintenance, delMaintenance, addMaintenance, updateMaintenance } from "@/api/device/maintenance";
+import { listDevice, updateDevice } from "@/api/device/list";
 
 export default {
   name: "Maintenance",
-  dicts: ['sys_maintenance_status'],
+  dicts: ['sys_device_maintenance_status', 'sys_device_maintenance_type'],
   data() {
     return {
+      // 设备选项
+      deviceOptions: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -235,27 +253,101 @@ export default {
       // 表单校验
       rules: {
         deviceId: [
-          { required: true, message: "设备ID不能为空", trigger: "blur" }
+          { required: true, message: "设备不能为空", trigger: "change" }
         ],
         maintenanceType: [
           { required: true, message: "维护类型不能为空", trigger: "blur" }
         ],
-        maintenanceContent: [
-          { required: true, message: "维护内容不能为空", trigger: "blur" }
+        faultDescription: [
+          { required: true, message: "故障描述不能为空", trigger: "blur" },
+          { min: 1, max: 500, message: "故障描述长度必须在1到500个字符之间", trigger: "blur" }
         ],
-        planTime: [
-          { required: true, message: "计划时间不能为空", trigger: "blur" }
+        startTime: [
+          { required: true, message: "开始时间不能为空", trigger: "change" },
+          { validator: (rule, value, callback) => {
+            if (value && this.form.endTime && value > this.form.endTime) {
+              callback(new Error("开始时间不能晚于结束时间"));
+            } else {
+              callback();
+            }
+          }, trigger: "change" }
         ],
-        status: [
+        endTime: [
+          { required: true, message: "结束时间不能为空", trigger: "change" },
+          { validator: (rule, value, callback) => {
+            if (value && this.form.startTime && value < this.form.startTime) {
+              callback(new Error("结束时间不能早于开始时间"));
+            } else {
+              callback();
+            }
+          }, trigger: "change" }
+        ],
+        maintenanceStatus: [
           { required: true, message: "状态不能为空", trigger: "change" }
+        ],
+        maintenanceResult: [
+          { required: false, max: 500, message: "维护结果长度不能超过500个字符", trigger: "blur" }
+        ],
+        maintenanceCost: [
+          { required: false, message: "维护费用不能为空", trigger: "blur" },
+          { pattern: /^\d+(\.\d{1,2})?$/, message: "维护费用必须为数字，最多保留两位小数", trigger: "blur" },
+          { validator: (rule, value, callback) => {
+            if (value && value < 0) {
+              callback(new Error("维护费用不能为负数"));
+            } else {
+              callback();
+            }
+          }, trigger: "blur" }
+        ],
+        remark: [
+          { max: 500, message: "备注长度不能超过500个字符", trigger: "blur" }
         ]
       }
     };
   },
   created() {
+    this.getDeviceOptions();
     this.getList();
   },
   methods: {
+    /** 获取设备选项列表 */
+    getDeviceOptions() {
+      listDevice().then(response => {
+        this.deviceOptions = response.rows;
+      });
+    },
+    /** 设备选择框变更事件 */
+    handleDeviceChange(value) {
+      // 可以在这里添加其他逻辑
+    },
+    /** 更新设备状态 */
+    updateDeviceStatus(deviceId, maintenanceStatus) {
+      let deviceStatus;
+      switch(maintenanceStatus) {
+        case '1': // 待处理
+          deviceStatus = '2'; // 待维修
+          break;
+        case '2': // 进行中
+          deviceStatus = '3'; // 维修中
+          break;
+        case '3': // 已完成
+          deviceStatus = '1'; // 正常
+          break;
+        case '4': // 已取消
+          deviceStatus = '1'; // 正常
+          break;
+        default:
+          return; // 其他状态不更新设备状态
+      }
+      updateDevice({
+        deviceId: deviceId,
+        deviceStatus: deviceStatus
+      }).then(() => {
+        this.getList();
+      }).catch(error => {
+        this.$modal.msgError("更新设备状态失败：" + error.message);
+      });
+    },
     /** 查询设备维护记录列表 */
     getList() {
       this.loading = true;
@@ -276,13 +368,12 @@ export default {
         maintenanceId: null,
         deviceId: null,
         maintenanceType: null,
-        maintenanceContent: null,
-        planTime: null,
+        faultDescription: null,
         startTime: null,
         endTime: null,
-        status: null,
-        result: null,
-        cost: null,
+        maintenanceStatus: null,
+        maintenanceResult: null,
+        maintenanceCost: null,
         remark: null
       };
       this.resetForm("form");
@@ -325,15 +416,21 @@ export default {
         if (valid) {
           if (this.form.maintenanceId != null) {
             updateMaintenance(this.form).then(response => {
+              this.updateDeviceStatus(this.form.deviceId, this.form.maintenanceStatus);
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
+            }).catch(error => {
+              this.$modal.msgError("修改失败：" + error.message);
             });
           } else {
             addMaintenance(this.form).then(response => {
+              this.updateDeviceStatus(this.form.deviceId, this.form.maintenanceStatus);
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
+            }).catch(error => {
+              this.$modal.msgError("新增失败：" + error.message);
             });
           }
         }

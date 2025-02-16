@@ -100,8 +100,8 @@ public class SysDeviceMaintenanceServiceImpl implements ISysDeviceMaintenanceSer
         SysDeviceMaintenance existingMaintenance = maintenanceMapper.selectSysDeviceMaintenanceByMaintenanceId(maintenance.getMaintenanceId());
         if (existingMaintenance != null) {
             existingMaintenance.setEndTime(new java.sql.Date(System.currentTimeMillis()));
-            existingMaintenance.setResult(maintenance.getResult());
-            existingMaintenance.setCost(maintenance.getCost());
+            existingMaintenance.setMaintenanceResult(maintenance.getMaintenanceResult());
+            existingMaintenance.setMaintenanceCost(maintenance.getMaintenanceCost());
             existingMaintenance.setMaintenanceStatus("2"); // 设置状态为已完成
             deviceService.updateDeviceStatus(existingMaintenance.getDeviceId(), "0"); // 设置设备状态为正常
             return maintenanceMapper.updateSysDeviceMaintenance(existingMaintenance);

@@ -172,6 +172,7 @@ export default {
       rules: {
         deviceCode: [{ required: true, message: "设备编号不能为空", trigger: "blur" }],
         deviceName: [{ required: true, message: "设备名称不能为空", trigger: "blur" }],
+        deviceType: [{ required: true, message: "设备类型不能为空", trigger: "blur" }],
         deviceStatus: [{ required: true, message: "设备状态不能为空", trigger: "change" }]
       },
       queryParams: {
@@ -277,3 +278,29 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+::v-deep .el-tag--success {
+  background-color: #f0f9eb;
+  color: #67c23a;
+  border-color: #c2e7b0;
+}
+
+::v-deep .el-tag--warning {
+  background-color: #fdf6ec;
+  color: #e6a23c;
+  border-color: #f5dab1;
+}
+
+::v-deep .el-tag--info {
+  background-color: #f4f4f5;
+  color: #909399;
+  border-color: #d3d4d6;
+}
+
+::v-deep .el-tag--danger {
+  background-color: #fef0f0;
+  color: #f56c6c;
+  border-color: #fbc4c4;
+}
+</style>
