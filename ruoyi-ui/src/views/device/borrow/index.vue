@@ -211,7 +211,7 @@ export default {
     },
     /** 获取可借用设备列表 */
     getDeviceOptions() {
-      listDevice({ deviceStatus: '0' }).then(response => {
+      listDevice({ deviceStatus: '1' }).then(response => {
         this.deviceOptions = response.rows;
       });
     },

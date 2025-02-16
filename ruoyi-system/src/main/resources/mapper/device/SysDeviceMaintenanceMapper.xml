@@ -92,24 +92,41 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <update id="updateSysDeviceMaintenance" parameterType="SysDeviceMaintenance">
-        update sys_device_maintenance
+        update sys_device_maintenance m
+        inner join sys_device d on m.device_id = d.device_id
         <trim prefix="SET" suffixOverrides=",">
-            <if test="deviceId != null">device_id = #{deviceId},</if>
-            <if test="maintenanceType != null">maintenance_type = #{maintenanceType},</if>
-            <if test="maintenanceContent != null">maintenance_content = #{maintenanceContent},</if>
-            <if test="planTime != null">plan_time = #{planTime},</if>
-            <if test="startTime != null">start_time = #{startTime},</if>
-            <if test="endTime != null">end_time = #{endTime},</if>
-            <if test="maintenanceStatus != null">maintenance_status = #{maintenanceStatus},</if>
-            <if test="maintenanceResult != null">maintenance_result = #{maintenanceResult},</if>
-            <if test="maintenanceCost != null">maintenance_cost = #{maintenanceCost},</if>
-            <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
-            <if test="remark != null">remark = #{remark},</if>
-            <if test="maintainer != null">maintainer = #{maintainer}, </if>
-            <if test="faultDescription != null">fault_description = #{faultDescription},</if>
+            <if test="deviceId != null">m.device_id = #{deviceId},</if>
+            <if test="maintenanceType != null">m.maintenance_type = #{maintenanceType},</if>
+            <if test="maintenanceContent != null">m.maintenance_content = #{maintenanceContent},</if>
+            <if test="planTime != null">m.plan_time = #{planTime},</if>
+            <if test="startTime != null">m.start_time = #{startTime},</if>
+            <if test="endTime != null">m.end_time = #{endTime},</if>
+            <if test="maintenanceStatus != null">
+                m.maintenance_status = #{maintenanceStatus},
+                d.device_status = 
+                    CASE #{maintenanceStatus}
+                        WHEN '0' THEN '4' /* 待处理时设备状态为维修中 */
+                        WHEN '1' THEN '4' /* 进行中时设备状态为维修中 */
+                        WHEN '2' THEN '1' /* 已完成时设备状态为正常 */
+                        WHEN '3' THEN '1' /* 已取消时设备状态为正常 */
+                        ELSE d.device_status
+                    END,
+            </if>
+            <if test="maintenanceResult != null">m.maintenance_result = #{maintenanceResult},</if>
+            <if test="maintenanceCost != null">m.maintenance_cost = #{maintenanceCost},</if>
+            <if test="updateBy != null">
+                m.update_by = #{updateBy},
+                d.update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                m.update_time = #{updateTime},
+                d.update_time = #{updateTime},
+            </if>
+            <if test="remark != null">m.remark = #{remark},</if>
+            <if test="maintainer != null">m.maintainer = #{maintainer},</if>
+            <if test="faultDescription != null">m.fault_description = #{faultDescription},</if>
         </trim>
-        where maintenance_id = #{maintenanceId}
+        where m.maintenance_id = #{maintenanceId}
     </update>
 
     <delete id="deleteSysDeviceMaintenanceByMaintenanceId" parameterType="Long">

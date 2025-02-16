@@ -73,13 +73,10 @@ public class SysDeviceBorrowServiceImpl implements ISysDeviceBorrowService
         {
             throw new RuntimeException("该设备已被借用，无法重复借用");
         }
-        if ("1".equals(device.getDeviceStatus()))
+        // 检查设备是否处于可借用状态
+        if (!"1".equals(device.getDeviceStatus()))
         {
-            throw new RuntimeException("设备当前处于停用状态，无法借用");
-        }
-        if (!"0".equals(device.getDeviceStatus()))
-        {
-            throw new RuntimeException("设备当前状态异常，请联系管理员");
+            throw new RuntimeException("设备当前状态不可借用，请确认设备是否正常");
         }
 
         // 检查设备是否已被借用
@@ -180,16 +177,57 @@ public class SysDeviceBorrowServiceImpl implements ISysDeviceBorrowService
             {
                 throw new RuntimeException("设备不存在");
             }
-            if (!"0".equals(device.getDeviceStatus()))
+            if (!"1".equals(device.getDeviceStatus()))
             {
                 throw new RuntimeException("设备当前状态不可借用");
             }
-            device.setDeviceStatus("1"); // 已借出
+            device.setDeviceStatus("2"); // 设置为借出状态
+            device.setBorrowStatus("1"); // 设置为已借出
             sysDeviceMapper.updateSysDevice(device);
         }
 
         sysDeviceBorrow.setApprover(SecurityUtils.getUsername());
         sysDeviceBorrow.setApproveTime(DateUtils.getNowDate());
+        sysDeviceBorrow.setUpdateBy(SecurityUtils.getUsername());
+        sysDeviceBorrow.setUpdateTime(DateUtils.getNowDate());
+
+        return sysDeviceBorrowMapper.updateSysDeviceBorrow(sysDeviceBorrow);
+    }
+
+    /**
+     * 归还设备
+     * 
+     * @param sysDeviceBorrow 设备借用记录
+     * @return 结果
+     */
+    private int returnSysDeviceBorrow(SysDeviceBorrow sysDeviceBorrow)
+    {
+        // 获取原借用记录
+        SysDeviceBorrow originalBorrow = sysDeviceBorrowMapper.selectSysDeviceBorrowById(sysDeviceBorrow.getBorrowId());
+        if (originalBorrow == null)
+        {
+            throw new RuntimeException("借用记录不存在");
+        }
+
+        // 检查记录状态是否为已批准
+        if (!"1".equals(originalBorrow.getBorrowStatus()))
+        {
+            throw new RuntimeException("该记录状态不正确，无法归还");
+        }
+
+        // 更新设备状态
+        SysDevice device = sysDeviceMapper.selectSysDeviceByDeviceId(originalBorrow.getDeviceId());
+        if (device == null)
+        {
+            throw new RuntimeException("设备不存在");
+        }
+        device.setDeviceStatus("1"); // 设置为正常状态
+        device.setBorrowStatus("0"); // 设置为未借出
+        sysDeviceMapper.updateSysDevice(device);
+
+        // 更新借用记录
+        sysDeviceBorrow.setBorrowStatus("3"); // 已归还
+        sysDeviceBorrow.setActualReturnTime(DateUtils.getNowDate());
         sysDeviceBorrow.setUpdateBy(SecurityUtils.getUsername());
         sysDeviceBorrow.setUpdateTime(DateUtils.getNowDate());
 

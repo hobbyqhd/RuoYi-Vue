@@ -32,13 +32,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectSysDeviceBorrowList" parameterType="SysDeviceBorrow" resultMap="SysDeviceBorrowResult">
         <include refid="selectSysDeviceBorrowVo"/>
         <where>  
-            <if test="deviceId != null "> and device_id = #{deviceId}</if>
+            <if test="deviceId != null "> and sys_device_borrow.device_id = #{deviceId}</if>
             <if test="deviceCode != null "> and device_code = #{deviceCode}</if>
             <if test="borrower != null  and borrower != ''"> and borrower = #{borrower}</if>
             <if test="borrowTime != null "> and borrow_time = #{borrowTime}</if>
             <if test="expectedReturnTime != null "> and expected_return_time = #{expectedReturnTime}</if>
             <if test="actualReturnTime != null "> and actual_return_time = #{actualReturnTime}</if>
-            <if test="borrowStatus != null  and borrowStatus != ''"> and borrow_status = #{borrowStatus}</if>
+            <if test="borrowStatus != null  and borrowStatus != ''"> and sys_device_borrow.borrow_status = #{borrowStatus}</if>
             <if test="borrowPurpose != null  and borrowPurpose != ''"> and borrow_purpose = #{borrowPurpose}</if>
             <if test="approver != null  and approver != ''"> and approver = #{approver}</if>
             <if test="approveTime != null "> and approve_time = #{approveTime}</if>
@@ -52,18 +52,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectCurrentBorrowByDeviceId" parameterType="Long" resultMap="SysDeviceBorrowResult">
         <include refid="selectSysDeviceBorrowVo"/>
-        where sys_device_borrow.device_id = #{deviceId} and borrow_status in ('0','1','4','5')
+        where sys_device_borrow.device_id = #{deviceId} and sys_device_borrow.borrow_status in ('0','1','4','5')
         limit 1
     </select>
 
     <update id="updateBorrowStatusToOverdue" parameterType="Long">
-        update sys_device_borrow
-        set borrow_status = '5',
-            update_time = sysdate(),
-            update_by = 'system'
-        where borrow_id = #{borrowId}
-        and actual_return_time > expected_return_time
-        and borrow_status in ('0', '1', '4')
+        update sys_device_borrow b
+        inner join sys_device d on b.device_id = d.device_id
+        set b.borrow_status = '5',
+            b.update_time = sysdate(),
+            b.update_by = 'system',
+            d.device_status = '5',
+            d.update_time = sysdate(),
+            d.update_by = 'system'
+        where b.borrow_id = #{borrowId}
+        and b.actual_return_time > b.expected_return_time
+        and b.borrow_status in ('0', '1', '4')
     </update>
         
     <insert id="insertSysDeviceBorrow" parameterType="SysDeviceBorrow" useGeneratedKeys="true" keyProperty="borrowId">
@@ -105,23 +109,42 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <update id="updateSysDeviceBorrow" parameterType="SysDeviceBorrow">
-        update sys_device_borrow
+        update sys_device_borrow b
+        inner join sys_device d on b.device_id = d.device_id
         <trim prefix="SET" suffixOverrides=",">
-            <if test="deviceId != null">device_id = #{deviceId},</if>
-            <if test="borrower != null">borrower = #{borrower},</if>
-            <if test="borrowTime != null">borrow_time = #{borrowTime},</if>
-            <if test="expectedReturnTime != null">expected_return_time = #{expectedReturnTime},</if>
-            <if test="actualReturnTime != null">actual_return_time = #{actualReturnTime},</if>
-            <if test="borrowStatus != null">borrow_status = #{borrowStatus},</if>
-            <if test="borrowPurpose != null">borrow_purpose = #{borrowPurpose},</if>
-            <if test="approver != null">approver = #{approver},</if>
-            <if test="approveTime != null">approve_time = #{approveTime},</if>
-            <if test="approveRemark != null">approve_remark = #{approveRemark},</if>
-            <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
-            <if test="remark != null">remark = #{remark},</if>
+            <if test="deviceId != null">b.device_id = #{deviceId},</if>
+            <if test="borrower != null">b.borrower = #{borrower},</if>
+            <if test="borrowTime != null">b.borrow_time = #{borrowTime},</if>
+            <if test="expectedReturnTime != null">b.expected_return_time = #{expectedReturnTime},</if>
+            <if test="actualReturnTime != null">b.actual_return_time = #{actualReturnTime},</if>
+            <if test="borrowStatus != null">
+                b.borrow_status = #{borrowStatus},
+                d.device_status = 
+                    CASE #{borrowStatus}
+                        WHEN '0' THEN '2' /* 待审批时设备状态为待借出 */
+                        WHEN '1' THEN '3' /* 已批准时设备状态为已借出 */
+                        WHEN '2' THEN '1' /* 已拒绝时设备状态为正常 */
+                        WHEN '3' THEN '1' /* 已归还时设备状态为正常 */
+                        WHEN '4' THEN '3' /* 借用中时设备状态为已借出 */
+                        WHEN '5' THEN '5' /* 逾期时设备状态为逾期 */
+                        ELSE d.device_status
+                    END,
+            </if>
+            <if test="borrowPurpose != null">b.borrow_purpose = #{borrowPurpose},</if>
+            <if test="approver != null">b.approver = #{approver},</if>
+            <if test="approveTime != null">b.approve_time = #{approveTime},</if>
+            <if test="approveRemark != null">b.approve_remark = #{approveRemark},</if>
+            <if test="updateBy != null">
+                b.update_by = #{updateBy},
+                d.update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                b.update_time = #{updateTime},
+                d.update_time = #{updateTime},
+            </if>
+            <if test="remark != null">b.remark = #{remark},</if>
         </trim>
-        where borrow_id = #{borrowId}
+        where b.borrow_id = #{borrowId}
     </update>
 
     <delete id="deleteSysDeviceBorrowById" parameterType="Long">
