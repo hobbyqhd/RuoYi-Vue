@@ -7,8 +7,7 @@ create table sys_device (
   device_name         varchar(50)     not null                   comment '设备名称',
   device_code         varchar(64)     not null                   comment '设备编号',
   device_type         varchar(20)     not null                   comment '设备类型',
-  device_status       char(1)         default '0'                comment '设备状态（1正常 2借出 3维修中 4报废）',
-  borrow_status       char(1)         default '0'                comment '借用状态（0未借出 1已借出）',
+  device_status       char(1)         default '1'                comment '设备状态（1正常 2借出 3维修中 4报废）',
   purchase_date       datetime                                    comment '购入日期',
   purchase_price      decimal(10,2)                              comment '购入价格',
   manufacturer        varchar(100)                               comment '制造商',
@@ -77,9 +76,6 @@ create table sys_device_maintenance (
 insert into sys_dict_type values(11, '设备状态', 'sys_device_status', '0', 'admin', sysdate(), '', null, '设备状态列表');
 -- 设备借用状态字典
 insert into sys_dict_type values(12, '设备借用状态', 'sys_device_borrow_status', '0', 'admin', sysdate(), '', null, '设备借用状态列表');
--- 设备借出状态字典
-insert into sys_dict_type values(13, '设备借出状态', 'sys_device_borrow_flag', '0', 'admin', sysdate(), '', null, '设备借出状态列表');
-
 -- ----------------------------
 -- 5、字典数据
 -- ----------------------------
@@ -95,10 +91,6 @@ insert into sys_dict_data values(51, 2, '已批准', '1', 'sys_device_borrow_sta
 insert into sys_dict_data values(52, 3, '已拒绝', '2', 'sys_device_borrow_status', '', 'danger', 'N', '0', 'admin', sysdate(), '', null, '已拒绝状态');
 insert into sys_dict_data values(53, 4, '已归还', '3', 'sys_device_borrow_status', '', 'info', 'N', '0', 'admin', sysdate(), '', null, '已归还状态');
 insert into sys_dict_data values(54, 5, '逾期', '4', 'sys_device_borrow_status', '', 'danger', 'N', '0', 'admin', sysdate(), '', null, '逾期状态');
-
--- 设备借出状态字典数据
-insert into sys_dict_data values(55, 1, '未借出', '0', 'sys_device_borrow_flag', '', 'success', 'N', '0', 'admin', sysdate(), '', null, '设备未借出');
-insert into sys_dict_data values(56, 2, '已借出', '1', 'sys_device_borrow_flag', '', 'info', 'N', '0', 'admin', sysdate(), '', null, '设备已借出');
 
 -- ----------------------------
 -- 6、菜单权限
